@@ -101,26 +101,6 @@ Explore:
 
 ---
 
-## 🧪 Example
-
-### `example.md`
-
-```markdown
-| Command      | Description          |
-|--------------|----------------------|
-|              |                      |
-| General      |                      |
-| FF 01 00 00 00 FE | Check TAB Connection |
-| FF 02 00 00 00 FD | Reset Module        |
-```
-
-### Result
-
-- "General" will be rendered as a **category header row**
-- The other rows will be rendered as standard data rows
-
----
-
 ## 💡 Customization Tips
 
 - Modify colors, shadows, and fonts in the embedded `<style>` section
