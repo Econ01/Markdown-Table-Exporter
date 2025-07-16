@@ -103,7 +103,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             --shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
             --cell-border: 1px solid #e0e7ff;
-            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: 1px solid rgba(255, 255, 255, 0.3);
         }}
 
@@ -116,7 +116,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             --light-gray: #252525;
             --shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
             --cell-border: 1px solid #333;
-            --glass-bg: rgba(30, 30, 46, 0.8);
+            --glass-bg: rgba(30, 30, 46, 0.85);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
         }}
 
@@ -234,7 +234,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             border: var(--glass-border);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow: visible;
             margin-bottom: 3rem;
             transition: var(--transition);
         }}
@@ -243,17 +243,22 @@ def convert_markdown_table_to_html(md_file, html_file):
             background: rgba(30, 30, 46, 0.7);
         }}
 
-        .table-toolbar {{
+        .sticky-header {{
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
             padding: 1.2rem 1.5rem;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }}
 
-        [data-theme="dark"] .table-toolbar {{
-            background: rgba(30, 30, 46, 0.5);
+        [data-theme="dark"] .sticky-header {{
+            background: rgba(30, 30, 46, 0.85);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }}
 
@@ -317,7 +322,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             border-left: var(--cell-border);
             border-right: var(--cell-border);
             border-bottom: var(--cell-border);
-            padding: 1.1rem 1.5rem;
+            padding: 0.8rem 1.2rem; /* Slightly more compact */
             word-wrap: break-word;
             overflow-wrap: break-word;
             background: transparent;
@@ -341,9 +346,10 @@ def convert_markdown_table_to_html(md_file, html_file):
             font-weight: 600;
             text-align: left;
             border-bottom: 2px solid var(--primary);
+            backdrop-filter: blur(10px);
+            z-index: 50;
             position: sticky;
             top: 0;
-            backdrop-filter: blur(10px);
         }}
 
         [data-theme="dark"] th {{
@@ -371,7 +377,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             font-weight: 700;
             color: var(--secondary);
             font-size: 1.1em;
-            padding: 1.2rem 1.5rem;
+            padding: 1rem 1.2rem; /* Slightly more compact */
             text-align: center;
             border-top: 2px solid rgba(115, 9, 183, 0.1);
             border-bottom: 2px solid rgba(115, 9, 183, 0.1);
@@ -383,10 +389,15 @@ def convert_markdown_table_to_html(md_file, html_file):
             color: #c792ea;
         }}
 
+        /* DEFAULT COMPACT VIEW */
         body[data-density="compact"] th,
         body[data-density="compact"] td {{
-            padding: 0.7rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.88rem;
+        }}
+
+        body[data-density="compact"] .category-row td {{
+            padding: 0.8rem 1rem;
         }}
 
         footer {{
@@ -533,7 +544,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                 width: 100%;
             }}
             
-            .table-toolbar {{
+            .sticky-header {{
                 flex-direction: column;
                 gap: 15px;
                 align-items: stretch;
@@ -542,15 +553,19 @@ def convert_markdown_table_to_html(md_file, html_file):
             .table-actions {{
                 justify-content: space-between;
             }}
+
+            th {{
+                top: 90px; /* Adjust for mobile sticky header */
+            }}
         }}
     </style>
 </head>
-<body>
+<body data-density="compact"> <!-- DEFAULT COMPACT VIEW -->
     <button class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon"></i>
     </button>
     <button class="density-toggle" id="densityToggle">
-        <i class="fas fa-compress-alt"></i>
+        <i class="fas fa-expand-alt"></i> <!-- Changed to expand icon -->
     </button>
 
     <div class="container">
@@ -574,18 +589,10 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         <main>
             <div class="card">
-                <div class="table-toolbar">
+                <div class="sticky-header"> <!-- Sticky header element -->
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="tableSearch" placeholder="Search table content...">
-                    </div>
-                    <div class="table-actions">
-                        <button class="btn btn-icon" title="Refresh view">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                        <button class="btn btn-icon" title="Column settings">
-                            <i class="fas fa-sliders-h"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="table-container">
@@ -646,12 +653,19 @@ def convert_markdown_table_to_html(md_file, html_file):
         densityToggle.addEventListener('click', () => {{
             const compact = body.getAttribute('data-density') === 'compact';
             body.setAttribute('data-density', compact ? 'normal' : 'compact');
+            updateDensityIcon(compact ? 'normal' : 'compact');
         }});
         
         function updateThemeIcon(theme) {{
             themeToggle.innerHTML = theme === 'dark' 
                 ? '<i class="fas fa-sun"></i>' 
                 : '<i class="fas fa-moon"></i>';
+        }}
+        
+        function updateDensityIcon(density) {{
+            densityToggle.innerHTML = density === 'compact'
+                ? '<i class="fas fa-expand-alt"></i>'
+                : '<i class="fas fa-compress-alt"></i>';
         }}
         
         // Set current date in footer
@@ -680,7 +694,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                 row.style.display = rowContainsText ? '' : 'none';
             }});
         }});
-        
+
         // Export menu toggle
         function toggleExportMenu() {{
             const menu = document.getElementById('exportOptions');
@@ -701,18 +715,67 @@ def convert_markdown_table_to_html(md_file, html_file):
         
         // Export functions
         function exportToCSV() {{
-            // ... existing CSV export code ...
+            const rows = document.querySelectorAll('table tr');
+            let csv = [];
+            
+            for (const row of rows) {{
+                const cells = Array.from(row.querySelectorAll('th, td')).map(cell => {{
+                    let text = cell.textContent.trim();
+                    // Escape quotes
+                    text = text.replace(/"/g, '""');
+                    return `"${{text}}"`;
+                }});
+                csv.push(cells.join(','));
+            }}
+            
+            const blob = new Blob([csv.join('\\n')], {{ type: 'text/csv' }});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'table_export.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
             showNotification('CSV exported successfully!', 'success');
         }}
         
         function exportToPDF() {{
-            // ... existing PDF export code ...
+            const {{ jsPDF }} = window.jspdf;
+            const pdf = new jsPDF();
+            
+            // Add title
+            pdf.setFontSize(18);
+            pdf.text('Markdown Table Export', 15, 15);
+            
+            // Add table
+            pdf.autoTable({{
+                html: 'table',
+                startY: 25,
+                styles: {{
+                    fontSize: 10,
+                    cellPadding: 4,
+                    valign: 'middle'
+                }},
+                headStyles: {{
+                    fillColor: [67, 97, 238],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                }},
+                alternateRowStyles: {{
+                    fillColor: [245, 245, 245]
+                }},
+                margin: {{ top: 20 }}
+            }});
+            
+            pdf.save('table_export.pdf');
             showNotification('PDF exported successfully!', 'success');
         }}
         
         function copyToClipboard() {{
-            // ... existing clipboard code ...
-            showNotification('HTML copied to clipboard!', 'success');
+            const tableHTML = document.querySelector('.table-container').innerHTML;
+            navigator.clipboard.writeText(tableHTML)
+                .then(() => showNotification('HTML copied to clipboard!', 'success'))
+                .catch(err => showNotification('Failed to copy: ' + err, 'error'));
         }}
         
         function showNotification(message, type) {{
@@ -758,6 +821,9 @@ def convert_markdown_table_to_html(md_file, html_file):
                 }}, 300);
             }}, 3000);
         }}
+
+        // Initialize density icon based on default compact view
+        updateDensityIcon('compact');
     </script>
 </body>
 </html>
