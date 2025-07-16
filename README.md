@@ -1,93 +1,168 @@
-# Markdown Table Exporter
+# 🧩 Markdown Table to Modern HTML Converter
 
+**Convert Markdown tables into modern, responsive, interactive HTML documents.**
 
+This Python-based tool takes a `.md` file containing a Markdown table and transforms it into a beautifully styled, self-contained `.html` file. The exported HTML includes responsive design, dark/light mode switching, export options (CSV, PDF, HTML), and category row styling — all without needing any backend server.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 🌟 Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- ✅ Supports standard GitHub-style Markdown tables
+- ✅ Fully styled and responsive HTML output
+- ✅ Automatic **dark/light mode** with persistent toggle
+- ✅ Export table as:  
+    - CSV file  
+    - PDF file (with headers and alternate row colors)  
+    - Copyable HTML snippet
+- ✅ Auto-detects **category rows** (first cell with text, rest empty)
+- ✅ Responsive for mobile and desktop
+- ✅ Modern look and feel using only embedded CSS and JS
+- ✅ Supports `<br>` inside Markdown cells
+- ✅ Lightweight and offline-capable
+- ✅ No external build steps — just run the Python script!
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 🔧 How It Works
 
+1. You write a Markdown file (`input.md`) that contains a table.
+2. This script scans for the first Markdown table in that file.
+3. It parses the table, recognizes category rows, processes content, and escapes HTML.
+4. The script wraps the processed table into a stylish, standalone HTML file (`output.html`) with embedded:
+- CSS styles
+- JavaScript for UI behavior and export
+- Theme toggles and export options
+
+---
+
+## 📸 Preview
+
+<table><tr><td>
+
+https://user-images.githubusercontent.com/yourusername/preview-dark.png
+
+</td><td>
+
+https://user-images.githubusercontent.com/yourusername/preview-light.png
+
+</td></tr></table>
+
+---
+
+## 📦 Installation
+
+### Requirements
+
+- Python 3.6+
+- No third-party packages required
+
+---
+
+## 🚀 Usage
+
+### 1. Save your Markdown file with a table
+
+```markdown
+| Name     | Age | Country |
+|----------|-----|---------|
+| John     | 25  | USA     |
+| Jane     | 30  | Canada  |
+|          |     |         |
+| Engineers |     |         |
+| Alice    | 27  | Germany |
+| Bob      | 29  | UK      |
 ```
-cd existing_repo
-git remote add origin https://git.hilti.com/AliCem.Cakmak/markdown-table-exporter.git
-git branch -M master
-git push -uf origin master
+
+### 2. Run the script
+
+```bash
+python md_table_to_html.py input.md output.html
+```
+- `input.md`: Path to your Markdown file containing a table.
+- `output.html`: Name of the file to export the styled HTML table into.
+
+### 3. Open the generated `output.html` in your browser
+
+Explore:
+- 🌗 Toggle between Light and Dark Mode
+- 📉 Export as CSV, PDF, or copy HTML
+- 📱 Enjoy responsive layout on any screen size
+
+---
+
+## ✏️ Markdown Table Format Notes
+
+- The script uses the **first Markdown table** in the file.
+- Category rows are detected when:
+    - The **first cell** of a row contains text
+    - All other cells in that row are empty
+- Supports `<br>` inside cells as line breaks.
+
+---
+
+## 🧪 Example
+
+### `example.md`
+
+```markdown
+| Command      | Description          |
+|--------------|----------------------|
+|              |                      |
+| General      |                      |
+| FF 01 00 00 00 FE | Check TAB Connection |
+| FF 02 00 00 00 FD | Reset Module        |
 ```
 
-## Integrate with your tools
+### Result
 
-- [ ] [Set up project integrations](https://git.hilti.com/AliCem.Cakmak/markdown-table-exporter/-/settings/integrations)
+- "General" will be rendered as a **category header row**
+- The other rows will be rendered as standard data rows
 
-## Collaborate with your team
+---
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+## 💡 Customization Tips
 
-## Test and Deploy
+- Modify colors, shadows, and fonts in the embedded `<style>` section
+- Adjust table layout responsiveness by editing the `min-width`, `padding`, or `font-size`- Export buttons use Font Awesome icons via CDN
 
-Use the built-in continuous integration in GitLab.
+---
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## 🧰 Developer Notes
 
-***
+- No external JS libraries except:
+    - [`jspdf`](https://cdnjs.com/libraries/jspdf)
+    - [`jspdf-autotable`](https://cdnjs.com/libraries/jspdf-autotable)
+    - [`Font Awesome`](https://cdnjs.com/libraries/font-awesome)
+- Designed to be **self-contained** and easy to deploy or embed
 
-# Editing this README
+---
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## 📂 Project Structure
 
-## Suggestions for a good README
+```text
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+.
+├── md_table_to_html.py   # Main Python script
+├── input.md              # Your Markdown file (you provide)
+├── output.html           # Resulting HTML file (auto-generated)
+```
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## 👨‍💻 Author
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Ali Cem Çakmak**
+🔗 [GitHub](https://github.com/Econ01)
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 📜 License
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+This project is licensed under the [MIT License](./LICENSE).
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+---
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## 🏁 Final Words
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This project was built out of the need to turn boring Markdown tables into beautifully presented, export-ready documents for reports, logs, technical specs, and more — all without using bloated web frameworks or plugins.Happy exporting! 🎉
