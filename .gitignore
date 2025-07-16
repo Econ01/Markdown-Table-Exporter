@@ -1,0 +1,5 @@
+// Ignore output files
+*.html
+
+// Ignore markdown files
+*.md
