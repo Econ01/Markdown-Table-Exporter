@@ -90,34 +90,89 @@ def convert_markdown_table_to_html(md_file, html_file):
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {{
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --success: #06d6a0;
-            --danger: #ef476f;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --border-radius: 16px;
-            --shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-            --cell-border: 1px solid #e0e7ff;
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+            /* hsl (fallback color) */
+            --bg-dark: hsl(204 68% 90%);
+            --bg: hsl(204 100% 95%);
+            --bg-light: hsl(204 100% 100%);
+            --text: hsl(210 100% 5%);
+            --text-muted: hsl(202 46% 27%);
+            --highlight: hsl(204 100% 100%);
+            --border: hsl(203 26% 50%);
+            --border-muted: hsl(204 35% 62%);
+            --primary: hsl(197 100% 19%);
+            --secondary: hsl(31 100% 21%);
+            --danger: hsl(9 25% 41%);
+            --warning: hsl(51 29% 33%);
+            --success: hsl(148 24% 35%);
+            --info: hsl(217 26% 42%);
+
+            --bg-header: hsla(204 100% 95%, 0.5);
+
+            /* oklch */
+            --bg-dark: oklch(0.92 0.03 237);
+            --bg: oklch(0.96 0.03 237);
+            --bg-light: oklch(1 0.03 237);
+            --text: oklch(0.15 0.06 237);
+            --text-muted: oklch(0.4 0.06 237);
+            --highlight: oklch(1 0.06 237);
+            --border: oklch(0.6 0.06 237);
+            --border-muted: oklch(0.7 0.06 237);
+            --primary: oklch(0.4 0.1 237);
+            --secondary: oklch(0.4 0.1 57);
+            --danger: oklch(0.5 0.06 30);
+            --warning: oklch(0.5 0.06 100);
+            --success: oklch(0.5 0.06 160);
+            --info: oklch(0.5 0.06 260);
+
+            --box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.07),
+                0 2px 4px rgba(0, 0, 0, 0.06),
+                0 4px 8px rgba(0, 0, 0, 0.05);
+
+            --card-border: 1px solid var(--border);
+
+            --transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }}
 
         [data-theme="dark"] {{
-            --primary: #5a75f0;
-            --primary-dark: #4a64d6;
-            --light: #121212;
-            --dark: #f0f2f5;
-            --gray: #adb5bd;
-            --light-gray: #252525;
-            --shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-            --cell-border: 1px solid #333;
-            --glass-bg: rgba(30, 30, 46, 0.85);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+              /* hsl (fallback color) */
+            --bg-dark: hsl(215 100% 2%);
+            --bg: hsl(206 93% 4%);
+            --bg-light: hsl(203 64% 8%);
+            --text: hsl(204 100% 95%);
+            --text-muted: hsl(204 44% 69%);
+            --highlight: hsl(203 33% 38%);
+            --border: hsl(202 46% 27%);
+            --border-muted: hsl(200 83% 15%);
+            --primary: hsl(203 73% 68%);
+            --secondary: hsl(25 66% 66%);
+            --danger: hsl(9 31% 65%);
+            --warning: hsl(52 22% 56%);
+            --success: hsl(147 21% 58%);
+            --info: hsl(217 34% 65%);
+
+            --bg-header: hsla(206 93% 4%, 0.5);
+            
+            /* oklch */
+            --bg-dark: oklch(0.1 0.03 237);
+            --bg: oklch(0.15 0.03 237);
+            --bg-light: oklch(0.2 0.03 237);
+            --text: oklch(0.96 0.06 237);
+            --text-muted: oklch(0.76 0.06 237);
+            --highlight: oklch(0.5 0.06 237);
+            --border: oklch(0.4 0.06 237);
+            --border-muted: oklch(0.3 0.06 237);
+            --primary: oklch(0.76 0.1 237);
+            --secondary: oklch(0.76 0.1 57);
+            --danger: oklch(0.7 0.06 30);
+            --warning: oklch(0.7 0.06 100);
+            --success: oklch(0.7 0.06 160);
+            --info: oklch(0.7 0.06 260);
+
+            --box-shadow: 
+                0 1px 2px rgba(0, 0, 0, 0.5),
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 4px 8px rgba(0, 0, 0, 0.3);
         }}
 
         * {{
@@ -128,16 +183,12 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         body {{
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
-            color: var(--dark);
+            background: var(--bg-dark);
+            color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
             padding: 2rem 1rem;
             transition: var(--transition);
-        }}
-
-        [data-theme="dark"] body {{
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }}
 
         .container {{
@@ -159,48 +210,13 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         .logo-card {{
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: var(--shadow);
             max-width: 600px;
             margin: 0 auto;
-        }}
-
-        .logo {{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 1.2rem;
-        }}
-
-        .logo-icon {{
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
-        }}
-
-        h1 {{
-            font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
         }}
 
         .subtitle {{
@@ -212,9 +228,9 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         .file-info {{
-            background: rgba(67, 97, 238, 0.08);
-            border-radius: 12px;
-            padding: 12px 20px;
+            background: var(--bg);
+            border-radius: 3rem;
+            padding: 1rem 2rem;
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -222,6 +238,8 @@ def convert_markdown_table_to_html(md_file, html_file):
             color: var(--primary);
             font-weight: 500;
             margin-top: 15px;
+            box-shadow: var(--box-shadow);
+            border: var(--card-border);
         }}
 
         .file-info i {{
@@ -229,37 +247,34 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         .card {{
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            border: var(--glass-border);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
+            background: var(--bg);
+            box-shadow: var(--box-shadow);
+            border-radius: 50px;
             overflow: visible;
             margin-bottom: 3rem;
             transition: var(--transition);
-        }}
-
-        [data-theme="dark"] .card {{
-            background: rgba(30, 30, 46, 0.7);
         }}
 
         .sticky-header {{
             position: sticky;
             top: 0;
             z-index: 100;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            background: var(--bg);
             padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
         }}
 
-        [data-theme="dark"] .sticky-header {{
-            background: rgba(30, 30, 46, 0.85);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .sticky-header.stuck {{
+            box-shadow: var(--box-shadow);
+            background: var(--bg-header);
+            backdrop-filter: blur(5px);
+            border: var(--card-border);
+            border-radius: 50px;
+            top: 2rem;
         }}
 
         .table-actions {{
@@ -428,14 +443,13 @@ def convert_markdown_table_to_html(md_file, html_file):
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--glass-bg);
-            color: var(--dark);
-            box-shadow: var(--shadow);
-            border: var(--glass-border);
+            background: var(--bg);
+            color: var(--text);
+            box-shadow: var(--box-shadow);
+            border: var(--border);
             cursor: pointer;
             z-index: 100;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
         }}
 
         .theme-toggle:hover, .density-toggle:hover {{
@@ -572,13 +586,6 @@ def convert_markdown_table_to_html(md_file, html_file):
         <header>
             <div class="logo-container">
                 <div class="logo-card">
-                    <div class="logo">
-                        <div class="logo-icon">
-                            <i class="fas fa-table"></i>
-                        </div>
-                        <h1>Modern Table Viewer</h1>
-                    </div>
-                    <p class="subtitle">A clean, responsive interface for viewing and exporting Markdown tables with modern design elements</p>
                     <div class="file-info">
                         <i class="fas fa-file-alt"></i>
                         <span>Converted from: {md_file}</span>
@@ -589,6 +596,7 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         <main>
             <div class="card">
+                <div class="sentinel"></div>
                 <div class="sticky-header"> <!-- Sticky header element -->
                     <div class="search-box">
                         <i class="fas fa-search"></i>
@@ -694,6 +702,21 @@ def convert_markdown_table_to_html(md_file, html_file):
                 row.style.display = rowContainsText ? '' : 'none';
             }});
         }});
+
+        // Sticky header functionality
+        const sentinel = document.querySelector('.sentinel');
+        const sticky = document.querySelector('.sticky-header');
+        const root = document.documentElement;
+
+        const observer = new IntersectionObserver(
+        ([entry]) => {{
+            sticky.classList.toggle('stuck', !entry.isIntersecting);
+        }},
+        {{ threshold: [1.0] }}
+        );
+
+        observer.observe(sentinel);
+
 
         // Export menu toggle
         function toggleExportMenu() {{
