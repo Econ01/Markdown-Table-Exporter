@@ -77,7 +77,7 @@ https://user-images.githubusercontent.com/yourusername/preview-light.png
 ### 2. Run the script
 
 ```bash
-python md_table_to_html.py input.md output.html
+python converter.py input.md output.html
 ```
 - `input.md`: Path to your Markdown file containing a table.
 - `output.html`: Name of the file to export the styled HTML table into.
