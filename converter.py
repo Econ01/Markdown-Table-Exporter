@@ -1,6 +1,7 @@
 import re
 import html
 import sys
+import os
 
 def process_cell_content(text):
     """Process cell content to handle <br> tags and preserve new lines"""
@@ -47,6 +48,11 @@ def convert_markdown_table_to_html(md_file, html_file):
     for row in content_rows:
         padded = row + [''] * (col_count - len(row))
         normalized_rows.append(padded[:col_count])
+
+    # Prepare original markdown (used for exporting as PDF)
+    original_md = '\n'.join(table_lines)
+
+    pdf_title = os.path.splitext(os.path.basename(md_file))[0]
 
     # Build HTML
     html_table = ['<div class="table-container">', '<table id="markdown-table">']
@@ -106,8 +112,6 @@ def convert_markdown_table_to_html(md_file, html_file):
             --success: hsl(148 24% 35%);
             --info: hsl(217 26% 42%);
 
-            --bg-header: hsla(204 100% 95%, 0.5);
-
             /* oklch */
             --bg-dark: oklch(0.92 0.03 237);
             --bg: oklch(0.96 0.03 237);
@@ -124,12 +128,30 @@ def convert_markdown_table_to_html(md_file, html_file):
             --success: oklch(0.5 0.06 160);
             --info: oklch(0.5 0.06 260);
 
+            --bg-header: oklch(0.96 0.03 237 / 0.5);
+            --bg-header-element: oklch(1 0.03 237 / 0.75);
+
             --box-shadow: 
                 0 1px 2px rgba(0, 0, 0, 0.07),
                 0 2px 4px rgba(0, 0, 0, 0.06),
                 0 4px 8px rgba(0, 0, 0, 0.05);
 
+            --box-shadow-elevated: 
+                0 10px 20px rgba(0, 0, 0, 0.1),
+                0 15px 30px rgba(0, 0, 0, 0.08),
+                0 20px 40px rgba(0, 0, 0, 0.06);
+
+            --box-shadow-subtle: 
+                0 3px 6px rgba(0, 0, 0, 0.06),
+                0 6px 12px rgba(0, 0, 0, 0.04),
+                0 9px 18px rgba(0, 0, 0, 0.03);
+
+            --inset-shadow:
+                inset 2px 2px 4px rgba(0, 0, 0, 0.06),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.7);
+
             --card-border: 1px solid var(--border);
+            --card-border-muted: 1px solid var(--border-muted);
 
             --transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }}
@@ -169,10 +191,27 @@ def convert_markdown_table_to_html(md_file, html_file):
             --success: oklch(0.7 0.06 160);
             --info: oklch(0.7 0.06 260);
 
+            --bg-header: oklch(0.15 0.03 237 / 0.5);
+            --bg-header-element: oklch(0.2 0.03 237 / 0.75);
+
             --box-shadow: 
                 0 1px 2px rgba(0, 0, 0, 0.5),
                 0 2px 4px rgba(0, 0, 0, 0.4),
                 0 4px 8px rgba(0, 0, 0, 0.3);
+
+            --box-shadow-elevated: 
+                0 12px 25px rgba(0, 0, 0, 0.35),
+                0 18px 40px rgba(0, 0, 0, 0.25),
+                0 25px 60px rgba(0, 0, 0, 0.2);
+
+            --box-shadow-subtle: 
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                0 8px 16px rgba(0, 0, 0, 0.15),
+                0 12px 24px rgba(0, 0, 0, 0.1);
+
+            --inset-shadow-dark:
+                inset 2px 2px 4px rgba(0, 0, 0, 0.5),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.06);
         }}
 
         * {{
@@ -194,29 +233,7 @@ def convert_markdown_table_to_html(md_file, html_file):
         .container {{
             max-width: 95%;
             margin: 0 auto;
-        }}
-
-        header {{
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding: 0 1rem;
-        }}
-
-        .logo-container {{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }}
-
-        .logo-card {{
-            border-radius: 20px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 600px;
-            margin: 0 auto;
+            margin-top: 2rem;
         }}
 
         .subtitle {{
@@ -228,22 +245,24 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         .file-info {{
-            background: var(--bg);
-            border-radius: 3rem;
+            background: var(--bg-header-element);
+            border-radius: 40px;
             padding: 1rem 2rem;
             display: inline-flex;
             align-items: center;
             gap: 10px;
             font-size: 0.95rem;
-            color: var(--primary);
+            color: var(--text-muted);
             font-weight: 500;
-            margin-top: 15px;
             box-shadow: var(--box-shadow);
-            border: var(--card-border);
+            border: var(--card-border-muted);
+            height: 3rem;
+            flex: 1;
         }}
 
         .file-info i {{
             font-size: 1.2rem;
+            color: var(--text-muted);
         }}
 
         .card {{
@@ -253,75 +272,110 @@ def convert_markdown_table_to_html(md_file, html_file):
             overflow: visible;
             margin-bottom: 3rem;
             transition: var(--transition);
+            position: relative;
+            justify-content: center;
         }}
 
         .sticky-header {{
             position: sticky;
             top: 0;
-            z-index: 100;
+            margin-left: auto;
+            margin-right: auto;
             background: var(--bg);
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            border-radius: 50px;
             display: flex;
             justify-content: space-between;
+            gap: 1rem;
             align-items: center;
             transition: var(--transition);
+            overflow: hidden;
         }}
 
         .sticky-header.stuck {{
+            width: 90%;
             box-shadow: var(--box-shadow);
-            background: var(--bg-header);
-            backdrop-filter: blur(5px);
+            background: transparent;
             border: var(--card-border);
             border-radius: 50px;
             top: 2rem;
+            z-index: 1;
         }}
 
-        .table-actions {{
-            display: flex;
-            gap: 12px;
+        .header-bg-layer {{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            background: var(--bg-header);
+            pointer-events: none;
+            backdrop-filter: blur(6px);
+        }}
+
+        .sticky-header > *:not(.header-bg-layer) {{
+            z-index: 2;
         }}
 
         .search-box {{
             position: relative;
-            width: 300px;
+            color: var(--text-muted);
+            height: 3rem;
+            flex: 1;
         }}
 
         .search-box input {{
             width: 100%;
-            padding: 0.8rem 1rem 0.8rem 40px;
-            border-radius: 12px;
-            border: 1px solid rgba(67, 97, 238, 0.2);
-            background: rgba(255, 255, 255, 0.8);
-            color: var(--dark);
+            height: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border-radius: 40px;
+            background: var(--bg-header-element);
+            border: var(--card-border-muted);
+            box-shadow: var(--box-shadow);
+            color: var(--text);
             font-size: 0.95rem;
             transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }}
 
         .search-box input:focus {{
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }}
-
-        [data-theme="dark"] .search-box input {{
-            background: rgba(30, 30, 46, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--light);
+            box-shadow: var(--box-shadow-elevated) !important;
+            transform: scale(1.05);
         }}
 
         .search-box i {{
             position: absolute;
-            left: 15px;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray);
+            color: var(--text-muted);
+        }}
+
+        .theme-toggle, .density-toggle {{
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-header-element);
+            color: var(--text-muted);
+            box-shadow: var(--box-shadow);
+            border: var(--card-border-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }}
+
+        .theme-toggle:hover, .density-toggle:hover {{
+            box-shadow: var(--box-shadow-subtle);
+            transform: translateY(-2px);
+            border-color: var(--primary);
         }}
 
         .table-container {{
             overflow-x: auto;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
         }}
 
         table {{
@@ -334,17 +388,18 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         th, td {{
-            border-left: var(--cell-border);
-            border-right: var(--cell-border);
-            border-bottom: var(--cell-border);
-            padding: 0.8rem 1.2rem; /* Slightly more compact */
+            border-left: var(--card-border-muted);
+            border-right: var(--card-border-muted);
+            border-bottom: var(--card-border-muted);
+            padding: 0.8rem 1rem;
             word-wrap: break-word;
             overflow-wrap: break-word;
             background: transparent;
+            z-index: 0;
         }}
 
         thead tr:first-child th {{
-            border-top: var(--cell-border);
+            border-top: var(--card-border-muted);
         }}
 
         th:first-child, td:first-child {{
@@ -356,69 +411,34 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         th {{
-            background: rgba(67, 97, 238, 0.08);
-            color: var(--primary);
+            background: var(--bg-dark);
+            color: var(--text);
             font-weight: 600;
-            text-align: left;
-            border-bottom: 2px solid var(--primary);
-            backdrop-filter: blur(10px);
-            z-index: 50;
+            text-align: center;
+            border-bottom: var(--card-border);
             position: sticky;
             top: 0;
         }}
 
-        [data-theme="dark"] th {{
-            background: rgba(67, 97, 238, 0.15);
-        }}
-
         tbody tr:nth-child(even) td {{
-            background: rgba(245, 247, 255, 0.5);
-        }}
-
-        [data-theme="dark"] tbody tr:nth-child(even) td {{
-            background: rgba(30, 30, 50, 0.4);
+            background: var(--bg-light);
         }}
 
         tbody tr:hover td {{
-            background: rgba(67, 97, 238, 0.08) !important;
+            background: var(--highlight) !important;
         }}
 
-        [data-theme="dark"] tbody tr:hover td {{
-            background: rgba(67, 97, 238, 0.15) !important;
-        }}
-
-        .category-row td {{
-            background: rgba(115, 9, 183, 0.08) !important;
-            font-weight: 700;
-            color: var(--secondary);
-            font-size: 1.1em;
-            padding: 1rem 1.2rem; /* Slightly more compact */
-            text-align: center;
-            border-top: 2px solid rgba(115, 9, 183, 0.1);
-            border-bottom: 2px solid rgba(115, 9, 183, 0.1);
-            backdrop-filter: blur(5px);
-        }}
-
-        [data-theme="dark"] .category-row td {{
-            background: rgba(115, 9, 183, 0.2) !important;
-            color: #c792ea;
-        }}
-
-        /* DEFAULT COMPACT VIEW */
         body[data-density="compact"] th,
         body[data-density="compact"] td {{
-            padding: 0.6rem 0.9rem;
-            font-size: 0.88rem;
-        }}
-
-        body[data-density="compact"] .category-row td {{
-            padding: 0.8rem 1rem;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+            line-height: 1.4;
         }}
 
         footer {{
             text-align: center;
-            margin-top: 3rem;
-            color: var(--gray);
+            margin-top: 2rem;
+            color: var(--text);
             font-size: 0.9rem;
             padding: 1.5rem 0;
         }}
@@ -433,38 +453,6 @@ def convert_markdown_table_to_html(md_file, html_file):
             text-decoration: underline;
         }}
 
-        .theme-toggle, .density-toggle {{
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
-            color: var(--text);
-            box-shadow: var(--box-shadow);
-            border: var(--border);
-            cursor: pointer;
-            z-index: 100;
-            transition: var(--transition);
-        }}
-
-        .theme-toggle:hover, .density-toggle:hover {{
-            transform: translateY(-3px);
-        }}
-
-        .theme-toggle {{ right: 25px; }}
-        .density-toggle {{ right: 90px; }}
-
-        [data-theme="dark"] .theme-toggle,
-        [data-theme="dark"] .density-toggle {{
-            background: rgba(30, 30, 46, 0.7);
-            color: var(--light);
-        }}
-
         .export-menu {{
             position: fixed;
             bottom: 35px;
@@ -476,48 +464,43 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         .export-btn {{
-            width: 60px;
-            height: 60px;
+            width: 4rem;
+            height: 4rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: var(--primary);
+            color: var(--highlight);
             font-size: 1.4rem;
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
-            border: none;
+            box-shadow: var(--box-shadow);
             cursor: pointer;
             transition: var(--transition);
-            backdrop-filter: blur(5px);
         }}
 
         .export-btn:hover {{
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(67, 97, 238, 0.4);
+            box-shadow: var(--box-shadow-elevated);
         }}
 
         .export-options {{
             position: absolute;
             bottom: 75px;
             right: 0;
-            background: var(--glass-bg);
+            background: var(--header-bg);
             backdrop-filter: blur(15px);
-            border: var(--glass-border);
-            border-radius: 18px;
-            box-shadow: var(--shadow);
+            border: var(--card-border-muted);
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
             padding: 12px;
             display: none;
             flex-direction: column;
             gap: 8px;
             min-width: 200px;
             transform-origin: bottom right;
-            animation: scaleIn 0.2s ease;
+            transition: var(--transition);
+            animation: scaleIn 0.3s ease-out forwards;
             z-index: 101;
-        }}
-
-        [data-theme="dark"] .export-options {{
-            background: rgba(30, 30, 46, 0.9);
         }}
 
         .export-options button {{
@@ -528,7 +511,7 @@ def convert_markdown_table_to_html(md_file, html_file):
             background: transparent;
             border: none;
             border-radius: 12px;
-            color: var(--dark);
+            color: var(--text);
             cursor: pointer;
             text-align: left;
             transition: var(--transition);
@@ -536,12 +519,9 @@ def convert_markdown_table_to_html(md_file, html_file):
             font-weight: 500;
         }}
 
-        [data-theme="dark"] .export-options button {{
-            color: var(--light);
-        }}
-
         .export-options button:hover {{
-            background: rgba(67, 97, 238, 0.1);
+            transition: none;
+            background: var(--highlight);
         }}
 
         @keyframes scaleIn {{
@@ -575,33 +555,40 @@ def convert_markdown_table_to_html(md_file, html_file):
     </style>
 </head>
 <body data-density="compact"> <!-- DEFAULT COMPACT VIEW -->
-    <button class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </button>
-    <button class="density-toggle" id="densityToggle">
-        <i class="fas fa-expand-alt"></i> <!-- Changed to expand icon -->
-    </button>
-
+    <div id="spinner" style="display:none; position:fixed; inset:0; background:rgba(255,255,255,0.7); z-index:2000; justify-content:center; align-items:center;">
+        <div style="border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+    </div>
+    <style>
+    @keyframes spin {{
+        0% {{ transform: rotate(0deg); }}
+        100% {{ transform: rotate(360deg); }}
+    }}
+    </style>
     <div class="container">
-        <header>
-            <div class="logo-container">
-                <div class="logo-card">
-                    <div class="file-info">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Converted from: {md_file}</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
         <main>
             <div class="card">
                 <div class="sentinel"></div>
                 <div class="sticky-header"> <!-- Sticky header element -->
+
+                    <div class="header-bg-layer"></div>
+                
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="tableSearch" placeholder="Search table content...">
                     </div>
+
+                    <div class="file-info">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Converted from: {md_file}</span>
+                    </div>
+
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+
+                    <button class="density-toggle" id="densityToggle">
+                        <i class="fas fa-expand-alt"></i> <!-- Changed to expand icon -->
+                    </button>
                 </div>
                 <div class="table-container">
                     {''.join(html_table)}
@@ -763,36 +750,148 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
         
         function exportToPDF() {{
-            const {{ jsPDF }} = window.jspdf;
-            const pdf = new jsPDF();
-            
-            // Add title
-            pdf.setFontSize(18);
-            pdf.text('Markdown Table Export', 15, 15);
-            
-            // Add table
-            pdf.autoTable({{
-                html: 'table',
-                startY: 25,
-                styles: {{
-                    fontSize: 10,
-                    cellPadding: 4,
-                    valign: 'middle'
-                }},
-                headStyles: {{
-                    fillColor: [67, 97, 238],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                }},
-                alternateRowStyles: {{
-                    fillColor: [245, 245, 245]
-                }},
-                margin: {{ top: 20 }}
-            }});
-            
-            pdf.save('table_export.pdf');
-            showNotification('PDF exported successfully!', 'success');
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'flex';
+
+            setTimeout(() => {{
+                try {{
+                    const rawMd = document.getElementById('original-md').textContent.trim();
+                    console.log("Raw Markdown content:", rawMd);
+                    const lines = rawMd.split('\\n').filter(line => line.trim().startsWith('|'));
+                    
+                    if (lines.length < 2) {{
+                        throw new Error('Markdown table is invalid!');
+                    }}
+                    
+                    // Parse header row
+                    const parseRow = (line) => {{
+                        return line
+                            .trim()
+                            .split('|')
+                            .slice(1, -1)
+                            .map(cell => cell.trim());
+                    }};
+                    
+                    const header = parseRow(lines[0]);
+                    const colCount = header.length;
+                    const body = [];
+                    
+                    // Process content rows (skip separator row at index 1)
+                    for (let i = 2; i < lines.length; i++) {{
+                        const row = parseRow(lines[i]);
+                        
+                        // Skip rows that don't match column count
+                        if (row.length !== colCount) continue;
+                        
+                        // Handle category rows (single non-empty cell in first column)
+                        if (row[0].trim() !== '' && row.slice(1).every(cell => cell.trim() === '')) {{
+                            body.push([{{
+                                content: row[0],
+                                colSpan: colCount,
+                                styles: {{
+                                    fillColor: [240, 240, 240],
+                                    textColor: [0, 0, 0],
+                                    fontStyle: 'bold',
+                                    halign: 'center',
+                                    cellPadding: {{
+                                        top: 6,
+                                        right: 4,
+                                        bottom: 6,
+                                        left: 4
+                                    }}
+                                }}
+                            }}]);
+                        }} else {{
+                            body.push(row);
+                        }}
+                    }}
+                    
+                    // Initialize PDF in landscape mode
+                    const {{ jsPDF }} = window.jspdf;
+                    const doc = new jsPDF('landscape', 'pt', 'a4');
+                    
+                    // Set PDF title from filename
+                    const pdfTitle = "{pdf_title}";
+
+                    // Add title in Typora style
+                    doc.setFontSize(18);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(50, 50, 50);
+                    doc.text(pdfTitle, 40, 40);
+                    
+                    // Add separator line under title
+                    doc.setLineWidth(0.5);
+                    doc.line(40, 50, 555, 50);
+                    
+                    // Generate table with Typora-like styling
+                    doc.autoTable({{
+                        head: [header],
+                        body: body,
+                        startY: 60,
+                        theme: 'grid',
+                        styles: {{
+                            fontSize: 10,
+                            cellPadding: {{
+                                top: 8,
+                                bottom: 8,
+                                left: 6,
+                                right: 6,
+                            }},
+                            overflow: 'linebreak',
+                            valign: 'top',
+                            lineColor: [220, 220, 220],
+                            lineWidth: 0.5,
+                            textColor: [50, 50, 50],
+                            font: 'helvetica'
+                        }},
+                        headStyles: {{
+                            fillColor: [245, 245, 245],
+                            textColor: [0, 0, 0],
+                            fontStyle: 'bold',
+                            fontSize: 11,
+                            halign: 'center',
+                            valign: 'middle',
+                        }},
+                        bodyStyles: {{
+                            valign: 'top',
+                        }},
+                        alternateRowStyles: {{
+                            fillColor: [250, 250, 250]
+                        }},
+                        margin: {{ 
+                            top: 10,
+                            left: 40,
+                            right: 40
+                        }},
+                        tableWidth: 'wrap',
+                        showHead: 'everyPage',
+                        pageBreak: 'auto',
+                        rowPageBreak: 'avoid',
+                        tableLineWidth: 0.5,
+                        didDrawCell: function(data) {{
+                            doc.setLineWidth(0.5);
+                            doc.setDrawColor(220, 220, 220);
+                            doc.rect(
+                                data.cell.x, 
+                                data.cell.y, 
+                                data.cell.width, 
+                                data.cell.height
+                            );
+                        }}
+                    }});
+                    
+                    // Save PDF with filename-based name
+                    doc.save(`${{pdfTitle}}.pdf`);
+                    showNotification("PDF exported successfully!", "success");
+                }} catch (error) {{
+                    console.error("PDF export error:", error);
+                    showNotification("PDF export failed: " + error.message, "error");
+                }} finally {{
+                    spinner.style.display = 'none';
+                }}
+            }}, 100);
         }}
+
         
         function copyToClipboard() {{
             const tableHTML = document.querySelector('.table-container').innerHTML;
@@ -847,6 +946,9 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         // Initialize density icon based on default compact view
         updateDensityIcon('compact');
+    </script>
+    <script id="original-md" type="text/plain">
+        {original_md}
     </script>
 </body>
 </html>
