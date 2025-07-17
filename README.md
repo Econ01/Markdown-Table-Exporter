@@ -2,9 +2,21 @@
 
 **Convert Markdown tables into modern, responsive, interactive HTML documents.**
 
-This Python-based tool takes a `.md` file containing a Markdown table and transforms it into a beautifully styled, self-contained `.html` file. The exported HTML includes responsive design, dark/light mode switching, export options (CSV, PDF, HTML), and category row styling — all without needing any backend server.
+This Python-based tool takes a `.md` file containing a Markdown table and transforms it into a beautifully styled, self-contained `.html` file. The exported HTML includes responsive design, dark/light mode switching, export options (CSV, PDF, HTML), and category row styling. All without needing any backend server.
 
 ---
+
+## 🔑 Why use this?
+
+* **Instant polish** – publish production‑ready tables without touching CSS.
+* **Zero dependencies** – pure Python, no external packages needed at runtime.
+* **Works everywhere** – open the generated file offline on desktop or mobile.
+* **Single click exports** – CSV, PDF, or copyable HTML snippet built‑in.
+* **Reader friendly** – automatic dark/light mode, compact/regular density toggle.
+* **Searh Functionality** – easly search anything contained in the table
+
+---
+
 
 ## 🌟 Features
 
@@ -38,15 +50,30 @@ This Python-based tool takes a `.md` file containing a Markdown table and transf
 
 ## 📸 Preview
 
-<table><tr><td>
+<p align="center">
+  <img src="assets/preview.png" alt="Light mode screenshot"><br>
+  <em>Light mode — compact density, responsive layout.</em>
+</p>
 
-https://user-images.githubusercontent.com/yourusername/preview-dark.png
+### ☀️Light/🌑Dark Mode Options
 
-</td><td>
+<table style="border:0;border-collapse:collapse;">
+  <tr>
+    <td align="center" style="border:none;">
+      <img src="assets/light.png" alt="Light mode preview"><br>
+      <em>Light&nbsp;Mode</em>
+    </td>
+    <td align="center" style="border:none;">
+      <img src="assets/dark.png" alt="Dark mode preview"><br>
+      <em>Dark&nbsp;Mode</em>
+    </td>
+  </tr>
+</table>
 
-https://user-images.githubusercontent.com/yourusername/preview-light.png
+##  Light Mode Preview
 
-</td></tr></table>
+
+
 
 ---
 
@@ -145,4 +172,4 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ## 🏁 Final Words
 
-This project was built out of the need to turn boring Markdown tables into beautifully presented, export-ready documents for reports, logs, technical specs, and more — all without using bloated web frameworks or plugins.Happy exporting! 🎉
+This project was built out of the need to turn boring Markdown tables into beautifully presented, export-ready documents for reports, logs, technical specs, and more. All without using bloated web frameworks or plugins. Happy exporting!
