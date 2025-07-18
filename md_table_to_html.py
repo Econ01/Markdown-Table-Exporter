@@ -862,7 +862,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                             left: 40,
                             right: 40
                         }},
-                        tableWidth: 'wrap',
+                        tableWidth: 'auto',
                         showHead: 'everyPage',
                         pageBreak: 'auto',
                         rowPageBreak: 'avoid',
