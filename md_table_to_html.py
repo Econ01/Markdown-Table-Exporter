@@ -829,53 +829,61 @@ def convert_markdown_table_to_html(md_file, html_file):
                         startY: 60,
                         theme: 'grid',
                         styles: {{
-                            fontSize: 10,
+                            fontSize: 9,
                             cellPadding: {{
-                                top: 8,
-                                bottom: 8,
-                                left: 6,
-                                right: 6,
+                                top: 6,
+                                bottom: 6,
+                                left: 5,
+                                right: 5,
                             }},
                             overflow: 'linebreak',
                             valign: 'top',
-                            lineColor: [220, 220, 220],
-                            lineWidth: 0.5,
-                            textColor: [50, 50, 50],
+                            lineColor: [200, 200, 200],
+                            lineWidth: 0.3,
+                            textColor: [34, 34, 34],
                             font: 'helvetica'
                         }},
                         headStyles: {{
-                            fillColor: [245, 245, 245],
+                            fillColor: [230, 230, 230],
                             textColor: [0, 0, 0],
                             fontStyle: 'bold',
-                            fontSize: 11,
+                            fontSize: 10,
                             halign: 'center',
                             valign: 'middle',
+                            cellPadding: {{ top: 7, bottom: 7, left: 5, right: 5 }},
+                            lineWidth: 0.3,
+                            lineColor: [180, 180, 180],
                         }},
                         bodyStyles: {{
                             valign: 'top',
+                            lineWidth: 0.2,
+                            lineColor: [210, 210, 210],
                         }},
                         alternateRowStyles: {{
-                            fillColor: [250, 250, 250]
+                            fillColor: [245, 245, 245]
                         }},
                         margin: {{ 
                             top: 10,
-                            left: 40,
-                            right: 40
+                            left: 35,
+                            right: 35
                         }},
                         tableWidth: 'auto',
                         showHead: 'everyPage',
                         pageBreak: 'auto',
                         rowPageBreak: 'avoid',
-                        tableLineWidth: 0.5,
+                        tableLineWidth: 0.3,
                         didDrawCell: function(data) {{
-                            doc.setLineWidth(0.5);
                             doc.setDrawColor(220, 220, 220);
-                            doc.rect(
-                                data.cell.x, 
-                                data.cell.y, 
-                                data.cell.width, 
-                                data.cell.height
-                            );
+                            doc.setLineWidth(0.3);
+                            doc.rect(data.cell.x, data.cell.y, data.cell.width, data.cell.height);
+                        }},
+                        didParseCell: function(data) {{
+                            if (data.row.section === 'body' && data.row.raw.length === 1) {{
+                                data.cell.styles.fillColor = [235, 240, 250];
+                                data.cell.styles.textColor = [0, 0, 70];
+                                data.cell.styles.fontStyle = 'bold';
+                                data.cell.styles.halign = 'center';
+                            }}
                         }}
                     }});
                     
