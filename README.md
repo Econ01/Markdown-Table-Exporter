@@ -1,12 +1,11 @@
-# 🧩 Markdown Table to Modern HTML Converter
+# Markdown Table to Modern HTML Converter
 
 **Convert Markdown tables into modern, responsive, interactive HTML documents.**
 
 This Python-based tool takes a `.md` file containing a Markdown table and transforms it into a beautifully styled, self-contained `.html` file. The exported HTML includes responsive design, dark/light mode switching, export options (CSV, PDF, HTML), and category row styling. All without needing any backend server.
 
----
 
-## 🔑 Why use this?
+## Why use this?
 
 * **Instant polish** – publish production‑ready tables without touching CSS.
 * **Zero dependencies** – pure Python, no external packages needed at runtime.
@@ -15,10 +14,8 @@ This Python-based tool takes a `.md` file containing a Markdown table and transf
 * **Reader friendly** – automatic dark/light mode, compact/regular density toggle.
 * **Searh Functionality** – easly search anything contained in the table
 
----
 
-
-## 🌟 Features
+## Features
 
 - ✅ Supports standard GitHub-style Markdown tables
 - ✅ Fully styled and responsive HTML output
@@ -34,9 +31,8 @@ This Python-based tool takes a `.md` file containing a Markdown table and transf
 - ✅ Lightweight and offline-capable
 - ✅ No external build steps — just run the Python script!
 
----
 
-## 🔧 How It Works
+## How It Works
 
 1. You write a Markdown file (`input.md`) that contains a table.
 2. This script scans for the first Markdown table in that file.
@@ -46,16 +42,15 @@ This Python-based tool takes a `.md` file containing a Markdown table and transf
 - JavaScript for UI behavior and export
 - Theme toggles and export options
 
----
 
-## 📸 Preview
+##  Preview
 
 <p align="center">
   <img src="assets/preview.png" alt="Light mode screenshot"><br>
   <em>Light mode — compact density, responsive layout.</em>
 </p>
 
-### ☀️Light/🌑Dark Mode Options
+### Light/Dark Mode Options
 
 <table style="border:0;border-collapse:collapse;">
   <tr>
@@ -70,23 +65,15 @@ This Python-based tool takes a `.md` file containing a Markdown table and transf
   </tr>
 </table>
 
-##  Light Mode Preview
-
-
-
-
----
-
-## 📦 Installation
+##  Installation
 
 ### Requirements
 
 - Python 3.6+
 - No third-party packages required
 
----
 
-## 🚀 Usage
+## Usage
 
 ### 1. Save your Markdown file with a table
 
@@ -116,9 +103,8 @@ Explore:
 - 📉 Export as CSV, PDF, or copy HTML
 - 📱 Enjoy responsive layout on any screen size
 
----
 
-## ✏️ Markdown Table Format Notes
+##  Markdown Table Format Notes
 
 - The script uses the **first Markdown table** in the file.
 - Category rows are detected when:
@@ -126,16 +112,14 @@ Explore:
     - All other cells in that row are empty
 - Supports `<br>` inside cells as line breaks.
 
----
 
-## 💡 Customization Tips
+##  Customization Tips
 
 - Modify colors, shadows, and fonts in the embedded `<style>` section
 - Adjust table layout responsiveness by editing the `min-width`, `padding`, or `font-size`- Export buttons use Font Awesome icons via CDN
 
----
 
-## 🧰 Developer Notes
+##  Developer Notes
 
 - No external JS libraries except:
     - [`jspdf`](https://cdnjs.com/libraries/jspdf)
@@ -143,9 +127,8 @@ Explore:
     - [`Font Awesome`](https://cdnjs.com/libraries/font-awesome)
 - Designed to be **self-contained** and easy to deploy or embed
 
----
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 
@@ -155,21 +138,18 @@ Explore:
 ├── output.html           # Resulting HTML file (auto-generated)
 ```
 
----
 
-## 👨‍💻 Author
+##  Author
 
 **Ali Cem Çakmak**
 🔗 [GitHub](https://github.com/Econ01)
 
----
 
-## 📜 License
+##  License
 
 This project is licensed under the [MIT License](./LICENSE).
 
----
 
-## 🏁 Final Words
+##  Final Words
 
 This project was built out of the need to turn boring Markdown tables into beautifully presented, export-ready documents for reports, logs, technical specs, and more. All without using bloated web frameworks or plugins. Happy exporting!
