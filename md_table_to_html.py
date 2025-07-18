@@ -392,6 +392,31 @@ def convert_markdown_table_to_html(md_file, html_file):
             background: transparent;
         }}
 
+        .column-grip {{
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 12px;
+            color: var(--text-muted);
+        }}
+
+        th:hover .column-grip {{
+            opacity: 1;
+        }}
+
+        table.resizing {{
+            cursor: col-resize;
+            user-select: none;
+        }}
+
         th, td {{
             border-left: var(--card-border-muted);
             border-right: var(--card-border-muted);
@@ -712,6 +737,59 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         observer.observe(sentinel);
 
+        // Column resizing functionality
+        let isResizing = false;
+        let currentColumn = null;
+        let startX = 0;
+        let startWidth = 0;
+
+        function initColumnResize() {{
+        const headers = document.querySelectorAll('#markdown-table th');
+        
+        headers.forEach((header, index) => {{
+            const grip = document.createElement('div');
+            grip.classList.add('column-grip');
+            grip.innerHTML = '↔';
+            header.appendChild(grip);
+            
+            grip.addEventListener('mousedown', (e) => {{
+            isResizing = true;
+            currentColumn = index;
+            startX = e.clientX;
+            startWidth = header.offsetWidth;
+            document.body.style.cursor = 'col-resize';
+            
+            const table = header.closest('table');
+            table.classList.add('resizing');
+            
+            e.preventDefault();
+            }});
+        }});
+        
+        document.addEventListener('mousemove', (e) => {{
+            if (!isResizing) return;
+            
+            const headers = document.querySelectorAll('#markdown-table th');
+            const header = headers[currentColumn];
+            const width = startWidth + (e.clientX - startX);
+            
+            header.style.width = `${{width}}px`;
+            
+            // Apply to all cells in column
+            document.querySelectorAll(`#markdown-table tr > td:nth-child(${{currentColumn + 1}})`)
+            .forEach(cell => cell.style.width = `${{width}}px`);
+        }});
+        
+        document.addEventListener('mouseup', () => {{
+            if (isResizing) {{
+            isResizing = false;
+            document.body.style.cursor = '';
+            document.querySelector('#markdown-table').classList.remove('resizing');
+            }}
+        }});
+        }}
+
+        initColumnResize();
 
         // Export menu toggle
         function toggleExportMenu() {{
