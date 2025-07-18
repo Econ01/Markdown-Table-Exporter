@@ -236,33 +236,17 @@ def convert_markdown_table_to_html(md_file, html_file):
             margin-top: 2rem;
         }}
 
-        .subtitle {{
-            color: var(--gray);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto 1.5rem;
-            line-height: 1.7;
+        .header {{
+            text-align: center;
+            margin: 2rem 0 3rem;
+            padding: 0 1rem;
         }}
 
-        .file-info {{
-            background: var(--bg-header-element);
-            border-radius: 40px;
-            padding: 1rem 2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            box-shadow: var(--box-shadow);
-            border: var(--card-border-muted);
-            height: 3rem;
-            flex: 1;
-        }}
-
-        .file-info i {{
-            font-size: 1.2rem;
-            color: var(--text-muted);
+        .header h1 {{
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
         }}
 
         .card {{
@@ -350,6 +334,27 @@ def convert_markdown_table_to_html(md_file, html_file):
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-muted);
+        }}
+
+        .file-info {{
+            background: var(--bg-header-element);
+            border-radius: 40px;
+            padding: 1rem 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            box-shadow: var(--box-shadow);
+            border: var(--card-border-muted);
+            height: 3rem;
+            flex: 1;
+        }}
+
+        .file-info i {{
+            font-size: 1.2rem;
             color: var(--text-muted);
         }}
 
@@ -566,6 +571,9 @@ def convert_markdown_table_to_html(md_file, html_file):
     </style>
     <div class="container">
         <main>
+            <div class="header">
+                <h1>Markdown Table Viewer</h1>
+            </div>
             <div class="card">
                 <div class="sentinel"></div>
                 <div class="sticky-header"> <!-- Sticky header element -->
