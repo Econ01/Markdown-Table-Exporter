@@ -755,8 +755,7 @@ def convert_markdown_table_to_html(md_file, html_file):
 
             setTimeout(() => {{
                 try {{
-                    const rawMd = document.getElementById('original-md').textContent.trim();
-                    console.log("Raw Markdown content:", rawMd);
+                    let rawMd = document.getElementById('original-md').textContent.trim();
                     const lines = rawMd.split('\\n').filter(line => line.trim().startsWith('|'));
                     
                     if (lines.length < 2) {{
@@ -769,7 +768,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                             .trim()
                             .split('|')
                             .slice(1, -1)
-                            .map(cell => cell.trim());
+                            .map(cell => cell.trim().replace(/<br\\s*\\/?>/gi, '\\n'));
                     }};
                     
                     const header = parseRow(lines[0]);
