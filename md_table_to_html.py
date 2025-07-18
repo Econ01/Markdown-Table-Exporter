@@ -251,7 +251,7 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         .card {{
             background: var(--bg);
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow-subtle);
             border-radius: 50px;
             overflow: visible;
             margin-bottom: 3rem;
@@ -278,7 +278,7 @@ def convert_markdown_table_to_html(md_file, html_file):
 
         .sticky-header.stuck {{
             width: 90%;
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--box-shadow-elevated);
             background: transparent;
             border: var(--card-border);
             border-radius: 50px;
@@ -335,6 +335,24 @@ def convert_markdown_table_to_html(md_file, html_file):
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
+        }}
+
+        .status-bar {{
+            height: 3rem;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-header-element);
+            border-radius: 40px;
+            box-shadow: var(--box-shadow);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border: var(--card-border-muted);
+        }}
+
+        .status-bar .actions {{
+            display: flex;
+            gap: 0.8rem;
         }}
 
         .file-info {{
@@ -560,26 +578,36 @@ def convert_markdown_table_to_html(md_file, html_file):
         }}
 
         @media (max-width: 768px) {{
-            h1 {{
-                font-size: 2.2rem;
-            }}
-            
-            .search-box {{
-                width: 100%;
-            }}
-            
             .sticky-header {{
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
+                flex-wrap: wrap;
+                padding: 1rem;
             }}
             
-            .table-actions {{
-                justify-content: space-between;
+            .search-box, .file-info {{
+                width: 100%;
+                margin-bottom: 0.5rem;
             }}
-
-            th {{
-                top: 90px; /* Adjust for mobile sticky header */
+            
+            .filters {{
+                flex-direction: column;
+                gap: 0.8rem;
+            }}
+            
+            .status-bar {{
+                flex-direction: column;
+                gap: 0.8rem;
+                align-items: center;
+                text-align: center;
+            }}
+            
+            .export-menu {{
+                bottom: 20px;
+                right: 20px;
+            }}
+            
+            .export-btn {{
+                width: 3.5rem;
+                height: 3.5rem;
             }}
         }}
     </style>
@@ -608,6 +636,13 @@ def convert_markdown_table_to_html(md_file, html_file):
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="tableSearch" placeholder="Search table content...">
+                    </div>
+
+                    <div class="status-bar">
+                        <div class="stats">
+                            <span id="rowCount">0 rows</span> • 
+                            <span id="visibleCount">0 visible</span>
+                        </div>
                     </div>
 
                     <div class="file-info">
@@ -699,7 +734,52 @@ def convert_markdown_table_to_html(md_file, html_file):
         // Set current date in footer
         const now = new Date();
         document.getElementById('timestamp').textContent = now.toLocaleString();
-        
+
+        // Function to update status bar with row count and file size
+        function updateStatusBar() {{
+            try {{
+                const dataRows = document.querySelectorAll('#markdown-table tbody tr:not(.category-row)');
+                const rowCount = dataRows.length;
+                
+                const rawMd = document.getElementById('original-md').textContent;
+                const fileSizeBytes = new Blob([rawMd]).size;
+                
+                function formatFileSize(bytes) {{
+                    if (bytes < 1024) return bytes + ' bytes';
+                    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                    return (bytes / 1048576).toFixed(1) + ' MB';
+                }}
+                
+                const fileSize = formatFileSize(fileSizeBytes);
+                
+                document.getElementById('rowCount').textContent = `${{rowCount}} Rows`;
+                document.getElementById('visibleCount').textContent = fileSize;
+                
+            }} catch (e) {{
+                console.error('Error updating status bar:', e);
+                // Fallback display
+                document.getElementById('rowCount').textContent = 'N/A Rows';
+                document.getElementById('visibleCount').textContent = 'N/A';
+            }}
+        }}
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {{
+            updateStatusBar();
+            
+            // Update when table changes (if needed)
+            const observer = new MutationObserver(updateStatusBar);
+            const tableContainer = document.querySelector('.table-container');
+            if (tableContainer) {{
+                observer.observe(tableContainer, {{ childList: true, subtree: true }});
+            }}
+
+            // Also update after search operations (if rows might be hidden)
+            document.getElementById('tableSearch')?.addEventListener('input', function() {{
+                setTimeout(updateStatusBar, 100);
+            }});
+        }});
+
         // Search functionality
         const searchInput = document.getElementById('tableSearch');
         searchInput.addEventListener('input', function() {{
