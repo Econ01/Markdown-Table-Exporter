@@ -3,3 +3,9 @@
 
 // Ignore markdown files
 *.md
+
+# PyInstaller and build artifacts
+build/
+dist/
+*.spec
+__pycache__/
