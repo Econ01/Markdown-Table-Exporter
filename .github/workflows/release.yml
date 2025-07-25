@@ -1,5 +1,5 @@
 # .github/workflows/release.yml
-# Working GitHub Actions workflow with proper asset inclusion
+# Fixed Windows PowerShell syntax issues
 
 name: Build and Release
 
@@ -28,22 +28,20 @@ jobs:
     - name: Verify folders exist
       run: |
         dir
-        if exist templates (echo "✅ templates folder found") else (echo "❌ templates folder NOT found")
-        if exist static (echo "✅ static folder found") else (echo "❌ static folder NOT found")
-        if exist gui_app.py (echo "✅ gui_app.py found") else (echo "❌ gui_app.py NOT found")
+        if (Test-Path "templates") { echo "✅ templates folder found" } else { echo "❌ templates folder NOT found" }
+        if (Test-Path "static") { echo "✅ static folder found" } else { echo "❌ static folder NOT found" }
+        if (Test-Path "gui_app.py") { echo "✅ gui_app.py found" } else { echo "❌ gui_app.py NOT found" }
+      shell: powershell
     
     - name: Build Windows executable
       run: |
-        pyinstaller --noconfirm --onefile --windowed ^
-          --name "MarkdownTableExporter-Windows" ^
-          --add-data "templates;templates" ^
-          --add-data "static;static" ^
-          gui_app.py
+        pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-Windows" --add-data "templates;templates" --add-data "static;static" gui_app.py
     
     - name: Verify build output
       run: |
         dir dist
-        if exist "dist\MarkdownTableExporter-Windows.exe" (echo "✅ Windows executable created") else (echo "❌ Windows executable NOT created")
+        if (Test-Path "dist\MarkdownTableExporter-Windows.exe") { echo "✅ Windows executable created" } else { echo "❌ Windows executable NOT created" }
+      shell: powershell
     
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v4
@@ -106,7 +104,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-tk
-        # Skip webkit packages that cause issues
     
     - name: Install Python dependencies
       run: |
