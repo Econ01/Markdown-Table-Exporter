@@ -1,0 +1,170 @@
+# .github/workflows/release.yml
+# GitHub Actions workflow for automated multi-platform releases
+
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller pywebview
+    
+    - name: Build Windows executable
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-Windows" --add-data "templates;templates" --add-data "static;static" gui_app.py
+    
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: dist/MarkdownTableExporter-Windows.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller pywebview
+    
+    - name: Build macOS application
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-macOS" --add-data "templates:templates" --add-data "static:static" gui_app.py
+    
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build
+        path: dist/MarkdownTableExporter-macOS
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.0
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller pywebview[gtk]
+    
+    - name: Build Linux executable
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-Linux" --add-data "templates:templates" --add-data "static:static" gui_app.py
+    
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-build
+        path: dist/MarkdownTableExporter-Linux
+
+  create-release:
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Markdown Table Exporter ${{ github.ref }}
+        body: |
+          ## 🚀 Markdown Table Exporter v1.0.0
+          
+          Transform your Markdown tables into beautiful, interactive HTML documents!
+          
+          ### 📦 Downloads
+          - **Windows**: Download `MarkdownTableExporter-Windows.exe`
+          - **macOS**: Download `MarkdownTableExporter-macOS`
+          - **Linux**: Download `MarkdownTableExporter-Linux`
+          
+          ### ✨ Features
+          - Modern Material 3 design with spring animations
+          - Drag & drop file loading
+          - Light/dark theme support
+          - Export to CSV, PDF, and HTML
+          - Command palette (Ctrl+K)
+          - Real-time table validation
+          
+          ### 🔧 System Requirements
+          - **Windows**: Windows 10 or later
+          - **macOS**: macOS 10.14 (Mojave) or later
+          - **Linux**: Ubuntu 18.04 or equivalent
+          
+          ### 📖 Usage
+          1. Download the appropriate file for your operating system
+          2. Run the executable (no Python installation required)
+          3. Load your Markdown file and convert to HTML
+          
+          For more information, see the [README](https://github.com/Econ01/markdown-table-exporter/blob/main/README.md).
+        draft: false
+        prerelease: false
+    
+    - name: Upload Windows Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./windows-build/MarkdownTableExporter-Windows.exe
+        asset_name: MarkdownTableExporter-Windows.exe
+        asset_content_type: application/octet-stream
+    
+    - name: Upload macOS Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./macos-build/MarkdownTableExporter-macOS
+        asset_name: MarkdownTableExporter-macOS
+        asset_content_type: application/octet-stream
+    
+    - name: Upload Linux Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./linux-build/MarkdownTableExporter-Linux
+        asset_name: MarkdownTableExporter-Linux
+        asset_content_type: application/octet-stream
