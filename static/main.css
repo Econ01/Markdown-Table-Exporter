@@ -1,8 +1,11 @@
-/* main.css - Main stylesheet importing all modules */
+/* main.css - Main stylesheet importing all modules including spring animations */
 
 /* Base Styles */
 @import url('./css/base/variables.css');
 @import url('./css/base/reset.css');
+
+/* Core Spring Animation System */
+@import url('./css/core/spring-animations.css');
 
 /* Layout */
 @import url('./css/layout/structure.css');

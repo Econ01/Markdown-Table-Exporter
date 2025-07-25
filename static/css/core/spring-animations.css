@@ -1,0 +1,322 @@
+/* css/core/spring-animations.css - Spring Animation Core Styles */
+
+/* CSS Custom Properties for Spring Animations */
+:root {
+  /* Default spring timing (can be overridden by JS) */
+  --spring-duration: 400ms;
+  --spring-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --spring-delay: 0ms;
+  
+  /* Spring animation states */
+  --spring-scale-from: 0.95;
+  --spring-scale-to: 1;
+  --spring-translate-y-from: 20px;
+  --spring-translate-y-to: 0px;
+  --spring-opacity-from: 0;
+  --spring-opacity-to: 1;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --spring-duration: 0ms;
+    --spring-easing: linear;
+  }
+  
+  .spring-animate,
+  .spring-animate * {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* Base spring animation class */
+.spring-animate {
+  transition-property: all;
+  transition-duration: var(--spring-duration);
+  transition-timing-function: var(--spring-easing);
+  transition-delay: var(--spring-delay);
+}
+
+/* Spring Animation Variants */
+
+/* Entrance Animations */
+.spring-enter {
+  animation: springEnter var(--spring-duration) var(--spring-easing) var(--spring-delay) both;
+}
+
+@keyframes springEnter {
+  from {
+    opacity: var(--spring-opacity-from);
+    transform: translateY(var(--spring-translate-y-from)) scale(var(--spring-scale-from));
+  }
+  to {
+    opacity: var(--spring-opacity-to);
+    transform: translateY(var(--spring-translate-y-to)) scale(var(--spring-scale-to));
+  }
+}
+
+/* Scale Spring */
+.spring-scale {
+  transition: transform var(--spring-duration) var(--spring-easing) var(--spring-delay);
+}
+
+.spring-scale:hover {
+  transform: scale(1.02);
+}
+
+.spring-scale:active {
+  transform: scale(0.98);
+}
+
+/* Bounce Spring (for success states) */
+.spring-bounce {
+  animation: springBounce var(--spring-duration) var(--spring-easing) var(--spring-delay);
+}
+
+@keyframes springBounce {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.05); }
+  50% { transform: scale(0.98); }
+  75% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Slide Spring Animations */
+.spring-slide-up {
+  animation: springSlideUp var(--spring-duration) var(--spring-easing) var(--spring-delay) both;
+}
+
+@keyframes springSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spring-slide-down {
+  animation: springSlideDown var(--spring-duration) var(--spring-easing) var(--spring-delay) both;
+}
+
+@keyframes springSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade Spring */
+.spring-fade-in {
+  animation: springFadeIn var(--spring-duration) var(--spring-easing) var(--spring-delay) both;
+}
+
+@keyframes springFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spring-fade-out {
+  animation: springFadeOut var(--spring-duration) var(--spring-easing) var(--spring-delay) both;
+}
+
+@keyframes springFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Component-Specific Spring Animations */
+
+/* Upload Zone Spring Breathing */
+.upload-zone.spring-breathing {
+  animation: springBreathing 3000ms cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes springBreathing {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.01); 
+    opacity: 0.95;
+  }
+}
+
+/* Upload Zone Excitement (on drag over) */
+.upload-zone.spring-excited {
+  animation: springExcited 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes springExcited {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05) rotate(0.5deg); }
+  100% { transform: scale(1.02); }
+}
+
+/* Button Spring Interactions */
+.action-button.spring-press {
+  transition: transform var(--spring-duration) cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.action-button.spring-press:active {
+  transform: scale(0.96);
+}
+
+/* Card Spring Entrance */
+.primary-card.spring-card-enter {
+  animation: springCardEnter 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes springCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Loading Spring Pulse */
+.loading-spinner.spring-pulse {
+  animation: springPulse 1500ms cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes springPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* Success Celebration Spring */
+.success-celebration {
+  animation: springCelebration 1200ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes springCelebration {
+  0% { 
+    transform: scale(1); 
+  }
+  25% { 
+    transform: scale(1.1) rotate(2deg); 
+  }
+  50% { 
+    transform: scale(0.95) rotate(-1deg); 
+  }
+  75% { 
+    transform: scale(1.05) rotate(0.5deg); 
+  }
+  100% { 
+    transform: scale(1) rotate(0deg); 
+  }
+}
+
+/* Stagger Animation Support */
+.spring-stagger > * {
+  transition-delay: calc(var(--spring-delay) + var(--stagger-index, 0) * 50ms);
+}
+
+/* Interactive Spring States */
+.spring-interactive {
+  transition: all var(--spring-duration) var(--spring-easing);
+}
+
+.spring-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.spring-interactive:active {
+  transform: translateY(0);
+  transition-duration: calc(var(--spring-duration) * 0.5);
+}
+
+/* Focus Spring Animation */
+.spring-focus:focus-visible {
+  animation: springFocusRing 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes springFocusRing {
+  0% { 
+    outline-width: 0px;
+    outline-color: transparent;
+  }
+  100% { 
+    outline-width: 2px;
+    outline-color: var(--md-sys-color-primary);
+  }
+}
+
+/* Progress Spring Animation */
+.spring-progress {
+  transition: transform var(--spring-duration) var(--spring-easing),
+              width var(--spring-duration) var(--spring-easing);
+}
+
+.spring-progress.completing {
+  animation: springProgressComplete 800ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes springProgressComplete {
+  0% { transform: scaleX(1); }
+  50% { transform: scaleX(1.02); }
+  100% { transform: scaleX(1); }
+}
+
+/* Contextual Reaction Springs */
+.spring-react-to-sibling {
+  transition: transform var(--spring-duration) var(--spring-easing),
+              opacity var(--spring-duration) var(--spring-easing);
+}
+
+/* When sibling gets focus/hover, react subtly */
+.spring-interactive:hover ~ .spring-react-to-sibling,
+.spring-interactive:focus ~ .spring-react-to-sibling {
+  transform: translateX(2px);
+  opacity: 0.8;
+}
+
+/* Spring Exit Animations */
+.spring-exit {
+  animation: springExit var(--spring-duration) cubic-bezier(0.4, 0.0, 0.2, 1) both;
+}
+
+@keyframes springExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+}
+
+/* Utility Classes for Quick Application */
+.spring-quick { --spring-duration: 200ms; --spring-easing: cubic-bezier(0.4, 0.0, 0.2, 1); }
+.spring-smooth { --spring-duration: 400ms; --spring-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.spring-gentle { --spring-duration: 600ms; --spring-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.spring-bouncy { --spring-duration: 500ms; --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.spring-snappy { --spring-duration: 300ms; --spring-easing: cubic-bezier(0.4, 0.0, 0.2, 1); }
