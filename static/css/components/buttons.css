@@ -1,0 +1,245 @@
+/* components/buttons.css - Button Components */
+
+/* Base Button Styles */
+.action-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--md-sys-spacing-2);
+  padding: var(--md-sys-spacing-3) var(--md-sys-spacing-6);
+  border-radius: var(--md-sys-shape-corner-full);
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking);
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  overflow: hidden;
+  min-height: 48px;
+}
+
+/* Button Variants */
+.outlined-button {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+}
+
+.outlined-button:hover {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: var(--md-sys-elevation-level1);
+}
+
+.filled-button {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border: none;
+  box-shadow: var(--md-sys-elevation-level1);
+}
+
+.filled-button:hover {
+  box-shadow: var(--md-sys-elevation-level2);
+}
+
+.filled-button:disabled {
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface);
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* Button Elements */
+.button-icon {
+  font-size: 20px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+  transition: font-variation-settings var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.action-button:hover .button-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20;
+}
+
+.button-state-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  pointer-events: none;
+}
+
+.action-button:hover .button-state-layer {
+  opacity: 0.08;
+}
+
+.action-button:focus .button-state-layer {
+  opacity: 0.12;
+}
+
+.action-button:active .button-state-layer {
+  opacity: 0.16;
+}
+
+/* Convert Button */
+.convert-button {
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-tertiary));
+  color: var(--md-sys-color-on-primary);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-large);
+  padding: var(--md-sys-spacing-4) var(--md-sys-spacing-6);
+  font-family: var(--md-sys-typescale-label-large-font);
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  letter-spacing: var(--md-sys-typescale-label-large-tracking);
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+  overflow: hidden;
+  box-shadow: var(--md-sys-elevation-level2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--md-sys-spacing-2);
+  min-height: 56px;
+}
+
+.convert-button:hover:not(:disabled) {
+  box-shadow: var(--md-sys-elevation-level4);
+  transform: translateY(-2px);
+}
+
+.convert-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.convert-button:disabled {
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface);
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.convert-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--md-sys-color-on-primary);
+  border-radius: 0 0 var(--md-sys-shape-corner-large) var(--md-sys-shape-corner-large);
+  opacity: 0;
+  width: 0%;
+  transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+}
+
+.convert-button.processing .convert-progress {
+  opacity: 1;
+  animation: progressFill var(--md-sys-motion-duration-extra-long4) var(--md-sys-motion-easing-standard) forwards;
+}
+
+@keyframes progressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Icon Button */
+.icon-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-full);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+  transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  overflow: hidden;
+}
+
+.icon-button .material-symbols-rounded {
+  font-size: 24px;
+  z-index: 1;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  transition: font-variation-settings var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+/* FAB (Floating Action Button) */
+.fab {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--md-sys-shape-corner-large);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: var(--md-sys-elevation-level3);
+  transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+  overflow: hidden;
+}
+
+.secondary-fab {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.fab:hover {
+  box-shadow: var(--md-sys-elevation-level4);
+  transform: scale(1.1);
+}
+
+.fab .material-symbols-rounded {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  transition: font-variation-settings var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.fab:hover .material-symbols-rounded {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.fab-state-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  pointer-events: none;
+}
+
+.fab:hover .fab-state-layer {
+  opacity: 0.08;
+}
+
+.fab:focus .fab-state-layer {
+  opacity: 0.12;
+}
+
+.fab:active .fab-state-layer {
+  opacity: 0.16;
+}
+
+/* Focus states for buttons */
+.action-button:focus-visible,
+.convert-button:focus-visible,
+.fab:focus-visible {
+  outline-offset: 4px;
+}

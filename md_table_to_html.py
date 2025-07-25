@@ -4,10 +4,42 @@ import sys
 import os
 
 def process_cell_content(text):
-    """Process cell content to handle <br> tags and preserve new lines"""
-    # Replace <br> tags with actual line breaks and escape the rest
-    processed = re.sub(r'<br\s*/?>', '\n', text, flags=re.IGNORECASE)
-    return html.escape(processed).replace('\n', '<br>')
+    """Process cell content to handle <br> tags, expanded Markdown syntax, and preserve new lines."""
+    # Replace <br> with actual line breaks for processing
+    text = re.sub(r'<br\s*/?>', '\n', text, flags=re.IGNORECASE)
+
+    # Bold (**text** or __text__)
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    text = re.sub(r'__(.*?)__', r'<strong>\1</strong>', text)
+
+    # Italic (*text* or _text_)
+    text = re.sub(r'(?<!\*)\*(?!\*)(.*?)\*(?<!\*)', r'<em>\1</em>', text)  # Avoid bold markers
+    text = re.sub(r'_(.*?)_', r'<em>\1</em>', text)
+
+    # Inline code (`text`)
+    text = re.sub(r'`(.*?)`', r'<code>\1</code>', text)
+
+    # Strikethrough (~~text~~)
+    text = re.sub(r'~~(.*?)~~', r'<del>\1</del>', text)
+
+    # Links [text](url)
+    text = re.sub(r'\[(.*?)\]\((.*?)\)', r'<a href="\2" target="_blank">\1</a>', text)
+
+    # Images ![alt](url)
+    text = re.sub(r'!\[(.*?)\]\((.*?)\)', r'<img src="\2" alt="\1">', text)
+
+    # Blockquotes > text (we can wrap in <blockquote>)
+    text = re.sub(r'^\s*>\s?(.*)', r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
+
+    # Headings (### Heading → <strong>Heading</strong> inside tables)
+    text = re.sub(r'^(#{1,6})\s*(.*)', r'<strong>\2</strong>', text, flags=re.MULTILINE)
+
+    # Escape other HTML entities but keep our injected tags
+    text = html.escape(text, quote=False)
+    text = text.replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')
+
+    # Convert line breaks back to <br>
+    return text.replace('\n', '<br>')
 
 def convert_markdown_table_to_html(md_file, html_file):
     try:
@@ -914,7 +946,46 @@ def convert_markdown_table_to_html(md_file, html_file):
             
             showNotification('CSV exported successfully!', 'success');
         }}
-        
+
+        function processMarkdownForPDF(text) {{
+            // Convert <br> tags to newlines
+            text = text.replace(/<br\s*\/?>/gi, '\\n');
+
+            // Remove bold markers (**text** or __text__)
+            text = text.replace(/\*\*(.*?)\*\*/g, '$1');
+            text = text.replace(/__(.*?)__/g, '$1');
+
+            // Remove italic markers (*text* or _text_)
+            text = text.replace(/\*(.*?)\*/g, '$1');
+            text = text.replace(/_(.*?)_/g, '$1');
+
+            // Remove inline code markers (`text`)
+            text = text.replace(/`(.*?)`/g, '$1');
+
+            // Remove strikethrough (~~text~~)
+            text = text.replace(/~~(.*?)~~/g, '$1');
+
+            // Convert links [text](url) -> text (url)
+            text = text.replace(/\[(.*?)\]\((.*?)\)/g, '$1 ($2)');
+
+            // Convert images ![alt](url) -> [Image: alt]
+            text = text.replace(/!\[(.*?)\]\((.*?)\)/g, '[Image: $1]');
+
+            // Convert blockquotes > text -> text (strip >)
+            text = text.replace(/^\s*>\s?/gm, '');
+
+            // Convert headings ### Heading -> Heading (strip #)
+            text = text.replace(/^(#{{1,6}})\s*/gm, '');
+
+            // Remove horizontal rules (--- or ***)
+            text = text.replace(/^(-{{3,}}|\*{{3,}})$/gm, '');
+
+            // Replace non-breaking spaces and other Unicode spaces with regular space
+            text = text.replace(/[\u00A0\u202F\u2007]/g, ' ');
+
+            return text.trim();
+        }}
+
         function exportToPDF() {{
             const spinner = document.getElementById('spinner');
             spinner.style.display = 'flex';
@@ -934,7 +1005,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                             .trim()
                             .split('|')
                             .slice(1, -1)
-                            .map(cell => cell.trim().replace(/<br\\s*\\/?>/gi, '\\n'));
+                            .map(cell => processMarkdownForPDF(cell.trim()));
                     }};
                     
                     const header = parseRow(lines[0]);
@@ -988,7 +1059,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                     doc.setLineWidth(0.5);
                     doc.line(40, 50, 555, 50);
                     
-                    // Generate table with Typora-like styling
+                    // Generate table
                     doc.autoTable({{
                         head: [header],
                         body: body,
@@ -1003,6 +1074,7 @@ def convert_markdown_table_to_html(md_file, html_file):
                                 right: 5,
                             }},
                             overflow: 'linebreak',
+                            cellWidth: 'auto',
                             valign: 'top',
                             lineColor: [200, 200, 200],
                             lineWidth: 0.3,

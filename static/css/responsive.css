@@ -1,0 +1,107 @@
+/* responsive.css - Responsive Design Rules */
+
+/* Tablet Styles */
+@media (max-width: 768px) {
+  .main-content {
+    padding: var(--md-sys-spacing-4);
+    gap: var(--md-sys-spacing-6);
+  }
+
+  .primary-card {
+    padding: var(--md-sys-spacing-6);
+  }
+
+  .upload-zone {
+    padding: var(--md-sys-spacing-8) var(--md-sys-spacing-4);
+  }
+
+  .file-actions {
+    gap: var(--md-sys-spacing-4);
+  }
+
+  .file-stats {
+    flex-direction: column;
+    gap: var(--md-sys-spacing-2);
+  }
+
+  .result-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .result-actions .result-link {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .fab-container {
+    bottom: var(--md-sys-spacing-4);
+    right: var(--md-sys-spacing-4);
+  }
+
+  .hero-title {
+    font-size: var(--md-sys-typescale-headline-large-size);
+    line-height: var(--md-sys-typescale-headline-large-line-height);
+  }
+
+  .app-title {
+    font-size: var(--md-sys-typescale-title-large-size);
+  }
+
+  .nav-content {
+    padding: 0 var(--md-sys-spacing-2);
+  }
+
+  .top-app-bar {
+    padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+  }
+
+  .command-palette-content {
+    margin: 0 var(--md-sys-spacing-4);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  .main-content {
+    padding: var(--md-sys-spacing-3);
+  }
+
+  .primary-card {
+    padding: var(--md-sys-spacing-4);
+  }
+
+  .upload-zone {
+    padding: var(--md-sys-spacing-6) var(--md-sys-spacing-3);
+  }
+
+  .upload-title {
+    font-size: var(--md-sys-typescale-title-medium-size);
+  }
+
+  .hero-title {
+    font-size: var(--md-sys-typescale-headline-medium-size);
+    line-height: var(--md-sys-typescale-headline-medium-line-height);
+  }
+
+  .app-title {
+    display: none;
+  }
+
+  .file-preview-content {
+    flex-direction: column;
+    gap: var(--md-sys-spacing-3);
+  }
+
+  .snackbar-container {
+    left: var(--md-sys-spacing-3);
+    right: var(--md-sys-spacing-3);
+    transform: none;
+    width: auto;
+  }
+}
