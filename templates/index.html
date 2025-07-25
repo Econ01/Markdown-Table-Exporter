@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Table Exporter v2.0</title>
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="../static/main.css">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <!-- App Shell -->
+    <div class="app-shell">
+        <!-- Dynamic Background -->
+        <div class="dynamic-background">
+            <div class="bg-orb orb-1"></div>
+            <div class="bg-orb orb-2"></div>
+            <div class="bg-orb orb-3"></div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <nav class="top-app-bar">
+            <div class="nav-content">
+                <div class="nav-leading">
+                    <span class="material-symbols-rounded nav-icon">table_chart</span>
+                    <h1 class="app-title">Markdown Table Exporter</h1>
+                </div>
+                <div class="nav-trailing">
+                    <button id="theme-toggle" class="icon-button nav-action" aria-label="Toggle theme">
+                        <span class="material-symbols-rounded">light_mode</span>
+                        <div class="state-layer"></div>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h2 class="hero-title">Transform Your Markdown Tables</h2>
+                    <p class="hero-subtitle">Convert markdown tables into beautiful, interactive HTML with just a few clicks</p>
+                </div>
+            </section>
+
+            <!-- Primary Card -->
+            <div class="primary-card surface-container-highest" id="drop-zone">
+                <!-- File Upload Zone -->
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon-container">
+                        <span class="material-symbols-rounded upload-icon">cloud_upload</span>
+                        <div class="upload-ripple"></div>
+                    </div>
+                    <h3 class="upload-title">Drop your markdown file here</h3>
+                    <p class="upload-subtitle">or click to browse files</p>
+                    <div class="upload-formats">
+                        <span class="format-chip">.md</span>
+                        <span class="format-chip">Markdown</span>
+                    </div>
+                </div>
+
+                <!-- File Actions -->
+                <div class="file-actions">
+                    <!-- Source File Section -->
+                    <div class="action-section">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded section-icon">description</span>
+                            <h4 class="section-title">Source File</h4>
+                        </div>
+                        <button id="source-btn" class="action-button outlined-button">
+                            <span class="material-symbols-rounded button-icon">folder_open</span>
+                            <span class="button-text">Select Markdown File</span>
+                            <div class="button-state-layer"></div>
+                        </button>
+                        <div id="source-file" class="file-preview hidden">
+                            <!-- File preview will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Output Location Section -->
+                    <div class="action-section">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded section-icon">folder</span>
+                            <h4 class="section-title">Export Location</h4>
+                        </div>
+                        <button id="output-btn" class="action-button outlined-button">
+                            <span class="material-symbols-rounded button-icon">folder_open</span>
+                            <span class="button-text">Choose Output Folder</span>
+                            <div class="button-state-layer"></div>
+                        </button>
+                        <div id="export-folder" class="location-info">
+                            <span class="material-symbols-rounded info-icon">info</span>
+                            <span class="info-text">Default: Same as source file</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Convert Action -->
+                <div class="convert-section">
+                    <button id="convert-btn" class="convert-button filled-button" disabled>
+                        <span class="material-symbols-rounded button-icon">auto_fix_high</span>
+                        <span class="button-text">Convert to HTML</span>
+                        <div class="convert-progress"></div>
+                        <div class="button-state-layer"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="status-section">
+                <div id="status-card" class="status-card surface-container">
+                    <div class="status-content">
+                        <span class="material-symbols-rounded status-icon">info</span>
+                        <div class="status-text">
+                            <h5 class="status-title">Ready to Convert</h5>
+                            <p class="status-message">Select a markdown file to begin the conversion process</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="result-card" class="result-card surface-container hidden">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <div class="fab-container">
+            <button id="help-fab" class="fab secondary-fab" aria-label="Help">
+                <span class="material-symbols-rounded">help</span>
+                <div class="fab-state-layer"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div id="command-palette" class="command-palette hidden">
+        <div class="command-palette-backdrop"></div>
+        <div class="command-palette-content surface-container-highest">
+            <div class="command-search-container">
+                <span class="material-symbols-rounded command-search-icon">search</span>
+                <input 
+                    type="text" 
+                    id="command-search" 
+                    class="command-search-input" 
+                    placeholder="Type a command or search..."
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+            <div class="command-results" id="command-results">
+                <!-- Command results will be populated by JavaScript -->
+            </div>
+            <div class="command-footer">
+                <div class="command-navigation-hints">
+                    <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+                    <span><kbd>Enter</kbd> Execute</span>
+                    <span><kbd>Esc</kbd> Close</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-content surface-container-high">
+            <div class="loading-animation">
+                <div class="loading-spinner"></div>
+                <div class="loading-particles">
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                    <div class="particle"></div>
+                </div>
+            </div>
+            <h4 class="loading-title">Processing your file</h4>
+            <p id="loading-message" class="loading-message">This won't take long...</p>
+        </div>
+    </div>
+
+    <!-- Snackbar Container -->
+    <div id="snackbar-container" class="snackbar-container"></div>
+
+    <!-- Dialog Container -->
+    <div id="dialog-container" class="dialog-container hidden"></div>
+
+    <!-- Main Application Script -->
+    <script type="module" src="../static/main.js"></script>
+</body>
+</html>

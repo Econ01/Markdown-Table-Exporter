@@ -1,8 +1,14 @@
 // Ignore output files
 *.html
 
+# But do not ignore index.html
+!index.html
+
 // Ignore markdown files
 *.md
+
+# But do not ignore README.md
+!README.md
 
 # PyInstaller and build artifacts
 build/
