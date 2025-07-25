@@ -1,5 +1,5 @@
 # .github/workflows/release.yml
-# GitHub Actions workflow for automated multi-platform releases
+# Fixed GitHub Actions workflow for automated multi-platform releases
 
 name: Build and Release
 
@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     
@@ -30,7 +30,7 @@ jobs:
         pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-Windows" --add-data "templates;templates" --add-data "static;static" gui_app.py
     
     - name: Upload Windows artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build
         path: dist/MarkdownTableExporter-Windows.exe
@@ -41,7 +41,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     
@@ -55,7 +55,7 @@ jobs:
         pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-macOS" --add-data "templates:templates" --add-data "static:static" gui_app.py
     
     - name: Upload macOS artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macos-build
         path: dist/MarkdownTableExporter-macOS
@@ -66,7 +66,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     
@@ -85,7 +85,7 @@ jobs:
         pyinstaller --noconfirm --onefile --windowed --name "MarkdownTableExporter-Linux" --add-data "templates:templates" --add-data "static:static" gui_app.py
     
     - name: Upload Linux artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: linux-build
         path: dist/MarkdownTableExporter-Linux
@@ -93,78 +93,75 @@ jobs:
   create-release:
     needs: [build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v4
     
     - name: Download all artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
+    
+    - name: Get tag name
+      id: tag_name
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
     
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Markdown Table Exporter ${{ github.ref }}
+        tag_name: ${{ steps.tag_name.outputs.TAG_NAME }}
+        name: Markdown Table Exporter ${{ steps.tag_name.outputs.TAG_NAME }}
         body: |
-          ## 🚀 Markdown Table Exporter v1.0.0
+          ## 🚀 Markdown Table Exporter ${{ steps.tag_name.outputs.TAG_NAME }}
           
           Transform your Markdown tables into beautiful, interactive HTML documents!
           
           ### 📦 Downloads
-          - **Windows**: Download `MarkdownTableExporter-Windows.exe`
-          - **macOS**: Download `MarkdownTableExporter-macOS`
-          - **Linux**: Download `MarkdownTableExporter-Linux`
+          
+          Choose the right version for your operating system:
+          
+          | Platform | Download | System Requirements |
+          |----------|----------|-------------------|
+          | 🪟 **Windows** | `MarkdownTableExporter-Windows.exe` | Windows 10+ |
+          | 🍎 **macOS** | `MarkdownTableExporter-macOS` | macOS 10.14+ |
+          | 🐧 **Linux** | `MarkdownTableExporter-Linux` | Ubuntu 18.04+ |
           
           ### ✨ Features
           - Modern Material 3 design with spring animations
-          - Drag & drop file loading
-          - Light/dark theme support
+          - Drag & drop file loading with visual feedback
+          - Light/dark theme support with smooth transitions
           - Export to CSV, PDF, and HTML
-          - Command palette (Ctrl+K)
-          - Real-time table validation
+          - Command palette (Ctrl+K) for power users
+          - Real-time table validation and error handling
           
           ### 🔧 System Requirements
-          - **Windows**: Windows 10 or later
+          - **Windows**: Windows 10 or later (64-bit)
           - **macOS**: macOS 10.14 (Mojave) or later
           - **Linux**: Ubuntu 18.04 or equivalent
+          - **Memory**: 256MB RAM minimum
+          - **Storage**: 100MB available space
           
-          ### 📖 Usage
+          ### 🎛️ Usage
           1. Download the appropriate file for your operating system
           2. Run the executable (no Python installation required)
-          3. Load your Markdown file and convert to HTML
+          3. Load your Markdown file via drag & drop or file browser
+          4. Convert to beautiful HTML with one click
+          5. Export in additional formats as needed
           
-          For more information, see the [README](https://github.com/Econ01/markdown-table-exporter/blob/main/README.md).
+          ### ⌨️ Keyboard Shortcuts
+          - `Ctrl+K` - Open command palette
+          - `Ctrl+O` - Open file dialog
+          - `Ctrl+T` - Toggle theme
+          - `Ctrl+Enter` - Start conversion
+          - `F1` - Show help dialog
+          - `Esc` - Close dialogs/palette
+          
+          ### 📖 Documentation
+          For detailed instructions and examples, see the [README](https://github.com/Econ01/markdown-table-exporter/blob/main/README.md).
         draft: false
         prerelease: false
-    
-    - name: Upload Windows Release Asset
-      uses: actions/upload-release-asset@v1
+        files: |
+          windows-build/MarkdownTableExporter-Windows.exe
+          macos-build/MarkdownTableExporter-macOS
+          linux-build/MarkdownTableExporter-Linux
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./windows-build/MarkdownTableExporter-Windows.exe
-        asset_name: MarkdownTableExporter-Windows.exe
-        asset_content_type: application/octet-stream
-    
-    - name: Upload macOS Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./macos-build/MarkdownTableExporter-macOS
-        asset_name: MarkdownTableExporter-macOS
-        asset_content_type: application/octet-stream
-    
-    - name: Upload Linux Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./linux-build/MarkdownTableExporter-Linux
-        asset_name: MarkdownTableExporter-Linux
-        asset_content_type: application/octet-stream
